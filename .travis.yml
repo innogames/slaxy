@@ -1,0 +1,14 @@
+language: go
+
+go:
+  - 1.12.x
+
+before_install:
+  - go get golang.org/x/lint/golint
+
+before_script:
+  - golint ./...
+  - go vet ./...
+
+script:
+  - go install ./slaxy

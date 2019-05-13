@@ -1,0 +1,7 @@
+---
+grace-period: 60s
+addr: 127.0.0.1:3000
+token: xoxb-###-###-###
+channel: xxx
+excluded-fields:
+  - ^sentry:.*$
