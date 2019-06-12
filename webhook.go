@@ -25,8 +25,17 @@ type webhook struct {
 
 // handleWebhook handles one webhook request
 func (s *server) handleWebhook(w http.ResponseWriter, req *http.Request) {
+	// validations
 	if req.Method != http.MethodPost {
 		w.WriteHeader(405)
+
+		return
+	}
+
+	parts := strings.Split(req.RequestURI, "/")
+	channel := parts[1]
+	if len(parts) > 2 || channel == "" {
+		w.WriteHeader(404)
 
 		return
 	}
@@ -56,14 +65,14 @@ func (s *server) handleWebhook(w http.ResponseWriter, req *http.Request) {
 	attachment := s.createAttachment(hook)
 
 	// post the message
-	channelID, timestamp, err := s.slack.PostMessage(s.cfg.Channel, slack.MsgOptionAttachments(attachment))
+	channelID, timestamp, err := s.slack.PostMessage(channel, slack.MsgOptionAttachments(attachment))
 	if err != nil {
 		w.WriteHeader(500)
 		s.logger.Errorf("Error while posting message: %s", err.Error())
 
 		return
 	}
-	s.logger.Infof("Message successfully sent to channel %s at %s", channelID, timestamp)
+	s.logger.Infof("Message successfully sent to channel %s (%s) at %s", channelID, channel, timestamp)
 
 	w.WriteHeader(200)
 }

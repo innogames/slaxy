@@ -18,8 +18,7 @@ type handler func(l net.Listener)
 type Config struct {
 	GracePeriod    time.Duration `mapstructure:"grace-period"`
 	Addr           string
-	Token          string `mapstructure:"token"`
-	Channel        string
+	Token          string   `mapstructure:"token"`
 	ExcludedFields []string `mapstructure:"excluded-fields"`
 }
 
