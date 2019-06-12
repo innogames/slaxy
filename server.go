@@ -6,7 +6,6 @@ import (
 	"net"
 	"net/http"
 	"regexp"
-	"sync"
 	"time"
 
 	"github.com/nlopes/slack"
@@ -19,7 +18,7 @@ type handler func(l net.Listener)
 type Config struct {
 	GracePeriod    time.Duration `mapstructure:"grace-period"`
 	Addr           string
-	Token          string `mapstructure:"bot-token"`
+	Token          string `mapstructure:"token"`
 	Channel        string
 	ExcludedFields []string `mapstructure:"excluded-fields"`
 }
@@ -30,7 +29,6 @@ type server struct {
 	logger         Logger
 	done           chan struct{}
 	srv            *http.Server
-	wg             *sync.WaitGroup
 	errChan        chan error
 	slack          *slack.Client
 	excludedFields []*regexp.Regexp
@@ -49,7 +47,6 @@ func New(cfg Config, logger Logger) Server {
 		cfg:     cfg,
 		logger:  logger,
 		done:    make(chan struct{}, 1),
-		wg:      new(sync.WaitGroup),
 		errChan: make(chan error, 100),
 	}
 }
@@ -66,8 +63,6 @@ func (s *server) Stop() error {
 	ctx, cancel := context.WithTimeout(context.Background(), s.cfg.GracePeriod)
 	err := s.srv.Shutdown(ctx)
 	cancel()
-
-	s.wg.Wait()
 
 	return err
 }

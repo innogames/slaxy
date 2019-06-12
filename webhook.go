@@ -109,7 +109,7 @@ func (s *server) createAttachment(hook webhook) slack.Attachment {
 	}
 
 	return slack.Attachment{
-		Text:   fmt.Sprintf("<%s|%s>", hook.URL, hook.Message),
+		Text:   fmt.Sprintf("<%s|*%s*>", hook.URL, hook.Message),
 		Color:  "#f43f20",
 		Fields: fields,
 	}
