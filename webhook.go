@@ -117,8 +117,10 @@ func (s *server) createAttachment(hook webhook) slack.Attachment {
 		})
 	}
 
+	lines := strings.Split(hook.Message, "\n")
+
 	return slack.Attachment{
-		Text:   fmt.Sprintf("<%s|*%s*>", hook.URL, hook.Message),
+		Text:   fmt.Sprintf("<%s|*%s*>", hook.URL, lines[0]),
 		Color:  "#f43f20",
 		Fields: fields,
 	}
